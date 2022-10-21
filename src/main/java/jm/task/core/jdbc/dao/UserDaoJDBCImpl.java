@@ -15,22 +15,18 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        String createTable = "CREATE TABLE users (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(45) NULL,lastName VARCHAR(45) NULL, age INT(3) NULL)";
-        try(ResultSet tables = con.getMetaData().getTables(null,null, "users", new String[] {"TABLE"})) {
-            if (!tables.next()) {
-                con.prepareStatement(createTable).execute();
-            }
+        String createTable = "CREATE TABLE IF NOT EXISTS users (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(45) NULL,lastName VARCHAR(45) NULL, age INT(3) NULL)";
+        try(PreparedStatement ps = con.prepareStatement(createTable)) {
+                ps.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void dropUsersTable() {
-        String dropTable = "DROP TABLE users";
-        try (ResultSet tables = con.getMetaData().getTables(null,null, "users", new String[] {"TABLE"})) {
-            if (tables.next()) {
-                con.prepareStatement(dropTable).execute();
-            }
+        String dropTable = "DROP TABLE IF EXISTS users";
+        try (PreparedStatement ps = con.prepareStatement(dropTable)) {
+            ps.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
